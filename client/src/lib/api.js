@@ -1,5 +1,7 @@
+const SERVER_URL = (import.meta.env.VITE_SERVER_URL || '').replace(/\/$/, '');
+
 async function request(path, { method = 'GET', body } = {}) {
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${SERVER_URL}/api${path}`, {
     method,
     credentials: 'include',
     headers: body ? { 'Content-Type': 'application/json' } : undefined,

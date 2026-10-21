@@ -82,8 +82,9 @@ export const useChat = create((set, get) => ({
       set((s) => ({ messages: s.messages.map((m) => (m.id === replyId ? { ...m, content: m.content + chunk } : m)) }));
 
     controller = new AbortController();
+    const serverUrl = (import.meta.env.VITE_SERVER_URL || '').replace(/\/$/, '');
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch(`${serverUrl}/api/chat`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

@@ -86,7 +86,11 @@ router.post('/login', loginLimit, async (req, res) => {
 });
 
 router.post('/logout', (_req, res) => {
-  res.clearCookie(COOKIE_NAME);
+  res.clearCookie(COOKIE_NAME, {
+    httpOnly: true,
+    sameSite: env.isProd ? 'none' : 'lax',
+    secure: env.isProd,
+  });
   res.json({ ok: true });
 });
 

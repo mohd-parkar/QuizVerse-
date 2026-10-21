@@ -11,8 +11,7 @@ export function signToken(userId) {
 export function setAuthCookie(res, token) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    // the app and API are served from one origin (see index.js), so Lax is enough and safest
-    sameSite: 'lax',
+    sameSite: env.isProd ? 'none' : 'lax',
     secure: env.isProd,
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
