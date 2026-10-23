@@ -2,7 +2,9 @@
 
 A real-time multiplayer quiz platform. A host picks a topic, the questions are written by AI, friends join a
 room with a code, everyone answers on the same clock, and a live leaderboard decides the winner. A built-in
-study assistant answers questions about your own quiz history and helps you review what you got wrong.
+study assistant answers questions about your own quiz history and helps you review what you got wrong.q
+
+Deployed Link 🚀: https://quizverse.site
 
 **Stack:** MongoDB · Express · React · Node.js (MERN) + Socket.IO, Tailwind CSS, Framer Motion,
 LangChain JS + Google Gemini, MongoDB Atlas Vector Search.
