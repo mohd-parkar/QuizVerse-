@@ -1,6 +1,6 @@
-# Quizverse
+# Quizverse - A real-time multiplayer quiz platform
 
-A real-time multiplayer quiz platform. A host picks a topic, the questions are written by AI, friends join a
+A host picks a topic, the questions are written by AI, friends join a
 room with a code, everyone answers on the same clock, and a live leaderboard decides the winner. A built-in
 study assistant answers questions about your own quiz history and helps you review what you got wrong.q
 
