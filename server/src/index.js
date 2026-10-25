@@ -23,10 +23,43 @@ const server = http.createServer(app);
 // behind a platform proxy (Render, Railway...) the real client IP is in X-Forwarded-For, which the rate limiters need
 if (env.isProd) app.set('trust proxy', 1);
 
+// Allow configured client URL(s), plus support comma-separated origins and automatically include www / apex variants
+const configuredOrigins = (env.clientUrl || 'http://localhost:5173')
+  .split(',')
+  .map((u) => u.trim().replace(/\/$/, ''))
+  .filter(Boolean);
+
+const allowedOrigins = new Set(configuredOrigins);
+for (const u of configuredOrigins) {
+  try {
+    const parsed = new URL(u);
+    if (parsed.hostname.startsWith('www.')) {
+      const nonWww = `${parsed.protocol}//${parsed.hostname.slice(4)}${parsed.port ? `:${parsed.port}` : ''}`;
+      allowedOrigins.add(nonWww);
+    } else if (!parsed.hostname.includes('localhost') && parsed.hostname.includes('.')) {
+      const withWww = `${parsed.protocol}//www.${parsed.hostname}${parsed.port ? `:${parsed.port}` : ''}`;
+      allowedOrigins.add(withWww);
+    }
+  } catch {}
+}
+
+const isOriginAllowed = (origin) => {
+  if (!origin || !env.isProd) return true;
+  return allowedOrigins.has(origin);
+};
+
 // CSP is left off: the page loads Google Fonts and a half-right policy breaks more than it protects.
 // COOP must allow popups, otherwise the Sign in with Google window cannot hand its result back to the page.
 app.use(helmet({ contentSecurityPolicy: false, crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' } }));
-app.use(cors({ origin: env.clientUrl, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin)) callback(null, true);
+      else callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
@@ -55,7 +88,13 @@ app.use((err, _req, res, _next) => {
 });
 
 export const io = new Server(server, {
-  cors: { origin: env.clientUrl, credentials: true },
+  cors: {
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin)) callback(null, true);
+      else callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+  },
 });
 
 registerSockets(io);

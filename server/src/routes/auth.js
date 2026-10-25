@@ -40,8 +40,9 @@ router.post('/register', signupLimit, async (req, res) => {
   if (exists) return res.status(409).json({ error: 'Username or email already in use' });
 
   const user = await User.create({ username, email, passwordHash: await bcrypt.hash(password, 10) });
-  setAuthCookie(res, signToken(user.id));
-  res.status(201).json({ user: user.toPublic() });
+  const token = signToken(user.id);
+  setAuthCookie(res, token);
+  res.status(201).json({ user: user.toPublic(), token });
 });
 
 // tells the browser whether to show the Google button (the client id is public by design)
@@ -64,8 +65,9 @@ router.post('/google', loginLimit, async (req, res) => {
 
   try {
     const user = await findOrCreateGoogleUser(profile);
-    setAuthCookie(res, signToken(user.id));
-    res.json({ user: user.toPublic() });
+    const token = signToken(user.id);
+    setAuthCookie(res, token);
+    res.json({ user: user.toPublic(), token });
   } catch (err) {
     if (err.code === 'EMAIL_NOT_VERIFIED') return res.status(401).json({ error: err.message });
     throw err;
@@ -81,8 +83,9 @@ router.post('/login', loginLimit, async (req, res) => {
   const ok = user?.passwordHash && (await bcrypt.compare(parsed.data.password, user.passwordHash));
   if (!ok) return res.status(401).json({ error: 'Invalid email or password. If you signed up with Google, use the Google button.' });
 
-  setAuthCookie(res, signToken(user.id));
-  res.json({ user: user.toPublic() });
+  const token = signToken(user.id);
+  setAuthCookie(res, token);
+  res.json({ user: user.toPublic(), token });
 });
 
 router.post('/logout', (_req, res) => {

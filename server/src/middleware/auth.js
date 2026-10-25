@@ -17,6 +17,14 @@ export function setAuthCookie(res, token) {
   });
 }
 
+export function extractToken(req) {
+  const authHeader = req.headers?.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.slice(7).trim();
+  }
+  return req.cookies?.[COOKIE_NAME] || null;
+}
+
 export async function userFromToken(token) {
   if (!token) return null;
   try {
@@ -28,7 +36,8 @@ export async function userFromToken(token) {
 }
 
 export async function requireAuth(req, res, next) {
-  const user = await userFromToken(req.cookies[COOKIE_NAME]);
+  const token = extractToken(req);
+  const user = await userFromToken(token);
   if (!user) return res.status(401).json({ error: 'Not authenticated' });
   req.user = user;
   next();

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { api } from './api.js';
+import { api, getAuthToken } from './api.js';
 
 const TOOL_LABELS = {
   get_my_quiz_history: 'Checking your quiz history…',
@@ -83,11 +83,15 @@ export const useChat = create((set, get) => ({
 
     controller = new AbortController();
     const serverUrl = (import.meta.env.VITE_SERVER_URL || '').replace(/\/$/, '');
+    const token = getAuthToken();
     try {
       const res = await fetch(`${serverUrl}/api/chat`, {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ message }),
         signal: controller.signal,
       });

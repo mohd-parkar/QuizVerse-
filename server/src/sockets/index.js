@@ -30,10 +30,11 @@ export function registerSockets(io) {
     },
   });
 
-  // Only signed-in users can connect at all. The account comes from the same httpOnly cookie the REST API uses.
+  // Only signed-in users can connect at all. Accepts JWT from handshake auth or httpOnly cookie.
   io.use(async (socket, next) => {
     const cookies = parseCookie(socket.handshake.headers.cookie || '');
-    const user = await userFromToken(cookies[COOKIE_NAME]);
+    const token = socket.handshake.auth?.token || cookies[COOKIE_NAME];
+    const user = await userFromToken(token);
     if (!user) return next(new Error('LOGIN_REQUIRED'));
     socket.data.user = user;
     next();
