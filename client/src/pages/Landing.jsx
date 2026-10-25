@@ -34,8 +34,8 @@ function FeatureGroup({ duplicate = false }) {
   return (
     <ul className={`flex shrink-0 gap-4 pr-4 ${duplicate ? 'marquee-dup' : ''}`} aria-hidden={duplicate || undefined}>
       {FEATURES.map(({ icon: Icon, title, text }) => (
-        <li key={title} className="w-72 shrink-0 sm:w-80">
-          <Card className="h-full">
+        <li key={title} className="w-64 shrink-0 sm:w-80">
+          <Card className="h-full p-5 sm:p-6">
             <span className="inline-flex rounded-xl bg-accent-soft p-2.5 text-accent"><Icon size={20} /></span>
             <h2 className="mt-4 font-semibold">{title}</h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted">{text}</p>
@@ -58,7 +58,7 @@ export default function Landing() {
 
   return (
     <div className="bg-glow flex min-h-dvh flex-col overflow-x-hidden">
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5">
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:py-5">
         <div className="flex items-center gap-2 text-lg font-bold">
           <Zap className="text-accent" size={20} /> Quizverse
         </div>
@@ -67,32 +67,35 @@ export default function Landing() {
             <Link to="/dashboard"><Button variant="ghost">Dashboard</Button></Link>
           ) : (
             <>
-              <Link to="/login"><Button variant="ghost">Log in</Button></Link>
-              <Link to="/register"><Button>Sign up</Button></Link>
+              <Link to="/login"><Button variant="ghost" className="px-3.5 sm:px-5">Log in</Button></Link>
+              <Link to="/register"><Button className="px-3.5 sm:px-5">Sign up</Button></Link>
             </>
           )}
         </nav>
       </header>
 
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-4 pb-24 pt-20 text-center sm:pt-28">
+      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-4 pt-12 pb-20 text-center sm:pt-28 sm:pb-24">
         <motion.h1
           variants={headline}
           initial="hidden"
           animate="show"
           aria-label="Quiz together. Win in real time."
-          className="text-4xl font-extrabold tracking-tight min-[420px]:text-5xl sm:text-6xl"
+          className="text-3xl min-[380px]:text-4xl min-[480px]:text-5xl sm:text-6xl font-extrabold tracking-tight leading-[1.15] sm:leading-tight"
         >
           <span className="block" aria-hidden="true"><Words text="Quiz together." /></span>
           <span className="block" aria-hidden="true"><Words text="Win in real time." shimmer /></span>
         </motion.h1>
-        <motion.p {...fadeUp(0.8)} className="mt-5 max-w-xl text-lg text-muted">
+        <motion.p
+          {...fadeUp(0.8)}
+          className="mt-4 sm:mt-5 max-w-xl text-[15px] sm:text-lg leading-relaxed text-muted px-2 sm:px-0"
+        >
           Pick any topic, invite friends with a code, and race through AI-generated questions on a live leaderboard.
         </motion.p>
 
         <motion.form
           onSubmit={join}
           {...fadeUp(1)}
-          className="mt-10 flex w-full max-w-md items-center gap-2 rounded-full border border-line bg-surface p-1.5 pl-5"
+          className="mt-8 sm:mt-10 flex w-full max-w-md items-center gap-2 rounded-full border border-line bg-surface p-1.5 pl-4 sm:pl-5"
         >
           <input
             value={code}
@@ -100,7 +103,7 @@ export default function Landing() {
             maxLength={6}
             placeholder="ROOM CODE"
             aria-label="Room code"
-            className="min-w-0 flex-1 bg-transparent font-mono text-lg tracking-[0.3em] text-white outline-none placeholder:text-zinc-600"
+            className="min-w-0 flex-1 bg-transparent font-mono text-base sm:text-lg tracking-[0.2em] sm:tracking-[0.3em] text-white outline-none placeholder:text-zinc-600"
           />
           <Button type="submit">Join <ArrowRight size={16} /></Button>
         </motion.form>

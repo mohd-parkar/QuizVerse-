@@ -30,9 +30,13 @@ export default function AppShell({ children }) {
             </NavLink>
           </nav>
           <div className="flex items-center gap-2 text-sm text-muted">
-            {user?.picture && (
+            {user?.picture ? (
               <img src={user.picture} alt="" referrerPolicy="no-referrer" className="size-7 rounded-full border border-line" />
-            )}
+            ) : user?.username ? (
+              <span className="flex size-7 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">
+                {user.username.charAt(0).toUpperCase()}
+              </span>
+            ) : null}
             <span className="max-w-28 truncate max-sm:hidden">{user?.username}</span>
             <button
               type="button"
